@@ -97,6 +97,13 @@
                   const y = match[0];
                   const z = text.slice(match.index + match[0].length, -1);
                   new_matches.push([x, y, z]);
+
+                  if (new_matches.length === 1000) {
+                    break;
+                  }
+                }
+                if (new_matches.length === 1000) {
+                  break;
                 }
               }
             }
