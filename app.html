@@ -91,14 +91,13 @@
 
             let new_matches = [];
             if (this.query.length > 0) {
-              const re = new RegExp(this.query, 'i')
+              const re = new RegExp(this.query, 'ig')
               for (text of dataset) {
-                while (match = re.exec(text)) {
+                while ((match = re.exec(text)) !== null) {
                   const x = text.slice(0, match.index);
                   const y = match[0];
                   const z = text.slice(match.index + match[0].length, -1);
                   new_matches.push([x, y, z]);
-                  text = z;
                 }
               }
             }
