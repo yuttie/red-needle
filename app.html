@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Red Needle</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      const dataset = [
+      ];
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        text-align: center;
+      }
+      #query-panel {
+        margin: 0 auto;
+        width: 30em;
+      }
+      #query-panel label {
+        font-weight: bold;
+      }
+      #query-panel * {
+        display: block;
+        width: 100%;
+      }
+      #query {
+        text-align: center;
+      }
+      #result-view {
+        width: 100%;
+      }
+      #result-view li {
+        margin: 0 auto;
+        display: flex;
+        position: relative;
+        margin: 0.3em auto;
+      }
+      #result-view li span {
+        display: block;
+        white-space: pre;
+      }
+      #result-view li span:nth-child(1) {
+        background-color: rgba(255, 0, 0, 0.3);
+        flex: 1 1 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        direction: rtl;
+        text-align: right;
+      }
+      #result-view li span:nth-child(2) {
+        background-color: rgba(0, 255, 0, 0.3);
+        flex: 0 0 auto;
+        text-align: center;
+      }
+      #result-view li span:nth-child(3) {
+        background-color: rgba(0, 0, 255, 0.3);
+        flex: 1 1 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="query-panel">
+        <input v-bind:value="query" v-on:input="update($event.target.value)" id="query" type="text" autofocus placeholder="Search">
+      </div>
+      <ul id="result-view">
+        <li v-for="match of matches">
+          <span>{{ match[0] }}</span>
+          <span>{{ match[1] }}</span>
+          <span>{{ match[2] }}</span>
+        </li>
+      </ul>
+    </div>
+    <script>
+      let app = new Vue({
+        el: '#app',
+        data: {
+          query: '',
+          matches: [],
+        },
+        methods: {
+          update: function(query) {
+            this.query = query;
+
+            let new_matches = [];
+            if (this.query.length > 0) {
+              const re = new RegExp(this.query, 'i')
+              for (text of dataset) {
+                while (match = re.exec(text)) {
+                  const x = text.slice(0, match.index);
+                  const y = match[0];
+                  const z = text.slice(match.index + match[0].length, -1);
+                  new_matches.push([x, y, z]);
+                  text = z;
+                }
+              }
+            }
+            this.matches = new_matches;
+          }
+        },
+      });
+
+      document.querySelector('#query').focus();
+    </script>
+  </body>
+</html>
