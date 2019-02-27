@@ -138,7 +138,6 @@
         },
         computed: {
           popupTransform: function() {
-            console.log(document.body.scrollTop);
             return `translate(${this.popup.x + 8}px, ${window.scrollY + this.popup.y + 8}px)`;
           },
         },
@@ -154,7 +153,6 @@
             this.popup.visible = false;
           },
           movePopup: function(ev) {
-            console.log(ev);
             this.popup.x = ev.clientX;
             this.popup.y = ev.clientY;
           },
