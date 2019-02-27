@@ -75,10 +75,10 @@
         <input v-bind:value="query" v-on:input="update($event.target.value)" id="query" type="text" autofocus placeholder="Search">
       </div>
       <ul id="result-view">
-        <li v-for="match of matches">
-          <span>{{ match[0] }}</span>
-          <span>{{ match[1] }}</span>
-          <span>{{ match[2] }}</span>
+        <li v-for="match of matches" v-bind:title="match.year">
+          <span>{{ match.parts[0] }}</span>
+          <span>{{ match.parts[1] }}</span>
+          <span>{{ match.parts[2] }}</span>
         </li>
       </ul>
     </div>
@@ -116,7 +116,7 @@
                   const x = text.slice(0, match.index);
                   const y = match[0];
                   const z = text.slice(match.index + match[0].length, -1);
-                  new_matches.push([x, y, z]);
+                  new_matches.push({year: record.year, parts: [x, y, z]});
 
                   if (new_matches.length === 100) {
                     break;
