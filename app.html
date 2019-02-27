@@ -5,8 +5,7 @@
     <title>Red Needle</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
-      const dataset = [
-      ];
+      const dataset = [];
     </script>
     <style>
       * {
@@ -110,7 +109,8 @@
             let new_matches = [];
             if (this.query.length > 0) {
               const re = new RegExp(this.query, 'ig')
-              for (text of dataset) {
+              for (record of dataset) {
+                const text = record.abstract;
                 while ((match = re.exec(text)) !== null) {
                   // Split the entire text into three parts x, y, and z
                   const x = text.slice(0, match.index);
