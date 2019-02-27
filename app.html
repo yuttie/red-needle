@@ -92,6 +92,13 @@
       #popup.hidden {
         display: none;
       }
+      #popup .title {
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+      #popup .authors {
+        margin-bottom: 1em;
+      }
     </style>
   </head>
   <body>
@@ -111,8 +118,23 @@
         </li>
       </ul>
       <div id="popup" v-bind:class="{ hidden: !popup.visible }" v-bind:style="{ transform: popupTransform }">
-        <div>{{ popup.year }}</div>
-        <div>{{ popup.abstract }}</div>
+        <div v-if="popup.paper">
+          <div class="title">{{ popup.paper.title }}</div>
+          <div class="authors">
+            <span class="author" v-for="author of popup.paper.short_authors">{{ author }}</span>
+          </div>
+          <div class="publication">{{ popup.paper.publication }}</div>
+          <div class="type">{{ popup.paper.type }}</div>
+          <div class="year-date"><span class="year">{{ popup.paper.year }}</span><span class="date">{{ popup.paper.date }}</span></div>
+          <div class="pp">{{ popup.paper.pp }}</div>
+          <div class="volume">{{ popup.paper.volume }}</div>
+          <div class="issue">{{ popup.paper.issue }}</div>
+          <div class="doi"><a v-bind:href="'https://doi.org/' + popup.paper.doi">{{ popup.paper.doi }}</a></div>
+          <div class="keywords">
+            <span class="keyword" v-for="keyword of popup.paper.keywords">{{ author }}</span>
+          </div>
+          <div class="abstract">{{ popup.paper.abstract }}</div>
+        </div>
       </div>
     </div>
     <script>
@@ -134,7 +156,7 @@
         data: {
           query: '',
           matches: [],
-          popup: { year: null, abstract: null, visible: false, x: null, y: null, },
+          popup: { paper: null, visible: false, x: null, y: null, },
         },
         computed: {
           popupTransform: function() {
@@ -144,8 +166,7 @@
         methods: {
           showPopup: function(ev, match) {
             this.popup.visible = true;
-            this.popup.year = match.year;
-            this.popup.abstract = match.abstract;
+            this.popup.paper = match.paper;
             this.popup.x = ev.clientX;
             this.popup.y = ev.clientY;
           },
@@ -162,8 +183,8 @@
             let new_matches = [];
             if (this.query.length > 0) {
               const re = new RegExp(this.query, 'ig')
-              for (record of dataset) {
-                const text = record.abstract;
+              for (paper of dataset) {
+                const text = paper.abstract;
                 while ((match = re.exec(text)) !== null) {
                   // Split the entire text into three parts x, y, and z
                   const x = text.slice(0, match.index);
@@ -195,7 +216,7 @@
                     }
                   })();
 
-                  new_matches.push({year: record.year, abstract: record.abstract, parts: [x1, x2, y, z1, z2]});
+                  new_matches.push({paper: paper, parts: [x1, x2, y, z1, z2]});
 
                   if (new_matches.length === 100) {
                     break;
