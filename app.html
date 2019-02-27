@@ -112,6 +112,7 @@
               const re = new RegExp(this.query, 'ig')
               for (text of dataset) {
                 while ((match = re.exec(text)) !== null) {
+                  // Split the entire text into three parts x, y, and z
                   const x = text.slice(0, match.index);
                   const y = match[0];
                   const z = text.slice(match.index + match[0].length, -1);
