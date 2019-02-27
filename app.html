@@ -98,6 +98,10 @@
     <div id="app">
       <div id="query-panel">
         <input v-bind:value="query" v-on:input="update($event.target.value)" id="query" type="text" autofocus placeholder="Search">
+        <div v-if="query.length > 0" id="message">
+          <span v-if="matches.length == 0">Nothing found</span>
+          <span v-else>Showing {{ matches.length }} matches</span>
+        </div>
       </div>
       <ul id="result-view">
         <li v-for="match of matches" v-on:mouseenter="showPopup($event, match)" v-on:mouseleave="hidePopup($event)" v-on:mousemove="movePopup($event)">
