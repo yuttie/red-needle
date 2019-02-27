@@ -42,17 +42,22 @@
         position: relative;
         margin: 0.3em auto;
       }
-      #result-view li span {
+      #result-view li > span {
         display: block;
         white-space: pre;
+      }
+      #result-view li span {
+        color: #ccc;
+      }
+      #result-view li span.matched-sentence {
+        color: #222;
       }
       #result-view li span:nth-child(1) {
         flex: 1 1 0;
         overflow: hidden;
         text-overflow: ellipsis;
-        direction: rtl;
         text-align: right;
-        color: #222
+        direction: rtl;
       }
       #result-view li span:nth-child(2) {
         font-weight: bold;
@@ -76,9 +81,9 @@
       </div>
       <ul id="result-view">
         <li v-for="match of matches" v-bind:title="match.year">
-          <span>{{ match.parts[0] }}</span>
-          <span>{{ match.parts[1] }}</span>
+          <span>{{ match.parts[0] }}<span class="matched-sentence">{{ match.parts[1] }}</span></span>
           <span>{{ match.parts[2] }}</span>
+          <span><span class="matched-sentence">{{ match.parts[3] }}</span>{{ match.parts[4] }}</span>
         </li>
       </ul>
     </div>
@@ -116,7 +121,33 @@
                   const x = text.slice(0, match.index);
                   const y = match[0];
                   const z = text.slice(match.index + match[0].length, -1);
-                  new_matches.push({year: record.year, parts: [x, y, z]});
+
+                  const [x1, x2] = (function() {
+                    if ((i = x.lastIndexOf('. ')) >= 0) {
+                      let x1 = x.slice(0, i + 1);
+                      let x2 = x.slice(i + 1, -1);
+                      if ((match = /^( +)(.*)$/.exec(x2)) !== null) {
+                        x1 += match[1];
+                        x2 = match[2];
+                      }
+                      return [x1, x2];
+                    }
+                    else {
+                      return ['', x];
+                    }
+                  })();
+                  const [z1, z2] = (function() {
+                    if ((i = z.indexOf('. ')) >= 0) {
+                      let z1 = z.slice(0, i + 1);
+                      let z2 = z.slice(i + 1, -1);
+                      return [z1, z2];
+                    }
+                    else {
+                      return [z, ''];
+                    }
+                  })();
+
+                  new_matches.push({year: record.year, parts: [x1, x2, y, z1, z2]});
 
                   if (new_matches.length === 100) {
                     break;
