@@ -78,6 +78,13 @@
         left: 0;
         background-color: #ffffff;
         box-shadow: 0 0 1em rgba(0, 0, 0, 0.5);
+        padding: 1em;
+        max-width: 32em;
+        max-height: 24em;
+        text-align: justify;
+        font-size: 0.8em;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       #popup.hidden {
         display: none;
@@ -98,6 +105,7 @@
       </ul>
       <div id="popup" v-bind:class="{ hidden: !popup.visible }" v-bind:style="{ transform: popupTransform }">
         <div>{{ popup.year }}</div>
+        <div>{{ popup.abstract }}</div>
       </div>
     </div>
     <script>
@@ -119,7 +127,7 @@
         data: {
           query: '',
           matches: [],
-          popup: { year: null, visible: false, x: null, y: null, },
+          popup: { year: null, abstract: null, visible: false, x: null, y: null, },
         },
         computed: {
           popupTransform: function() {
@@ -131,6 +139,7 @@
           showPopup: function(ev, match) {
             this.popup.visible = true;
             this.popup.year = match.year;
+            this.popup.abstract = match.abstract;
             this.popup.x = ev.clientX;
             this.popup.y = ev.clientY;
           },
@@ -181,7 +190,7 @@
                     }
                   })();
 
-                  new_matches.push({year: record.year, parts: [x1, x2, y, z1, z2]});
+                  new_matches.push({year: record.year, abstract: record.abstract, parts: [x1, x2, y, z1, z2]});
 
                   if (new_matches.length === 100) {
                     break;
