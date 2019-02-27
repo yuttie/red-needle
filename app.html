@@ -83,11 +83,8 @@
         box-shadow: 0 0 1em rgba(0, 0, 0, 0.5);
         padding: 1em;
         max-width: 32em;
-        max-height: 24em;
-        text-align: justify;
         font-size: 0.8em;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        text-align: center;
       }
       #popup.hidden {
         display: none;
@@ -98,6 +95,18 @@
       }
       #popup .authors {
         margin-bottom: 1em;
+      }
+      #popup .abstract {
+        margin-top: 1em;
+        overflow: hidden;
+        text-align: justify;
+        text-overflow: ellipsis;
+        max-height: 24em;
+        font-family: serif;
+        line-height: 1.1em;
+      }
+      #popup .keyword {
+        font-style: italic;
       }
     </style>
   </head>
@@ -121,17 +130,20 @@
         <div v-if="popup.paper">
           <div class="title">{{ popup.paper.title }}</div>
           <div class="authors">
-            <span class="author" v-for="author of popup.paper.short_authors">{{ author }}</span>
+            <span v-for="(author, index) of popup.paper.short_authors"><span v-if="index > 0">, </span><span class="author">{{ author }}.</span></span>
           </div>
-          <div class="publication">{{ popup.paper.publication }}</div>
-          <div class="type">{{ popup.paper.type }}</div>
-          <div class="year-date"><span class="year">{{ popup.paper.year }}</span><span class="date">{{ popup.paper.date }}</span></div>
-          <div class="pp">{{ popup.paper.pp }}</div>
-          <div class="volume">{{ popup.paper.volume }}</div>
-          <div class="issue">{{ popup.paper.issue }}</div>
-          <div class="doi"><a v-bind:href="'https://doi.org/' + popup.paper.doi">{{ popup.paper.doi }}</a></div>
+          <div class="publication">
+            <span class="publication-title">{{ popup.paper.publication }}</span>,
+            <span class="volume">{{ popup.paper.volume }}</span>(<span class="issue">{{ popup.paper.issue }}</span>),
+            <span class="pp" v-if="popup.paper.pp">{{ popup.paper.pp[0] }}&ndash;{{ popup.paper.pp[1] }}</span>
+          </div>
+          <div class="year-date">
+            <span class="date">{{ popup.paper.date }}</span>,
+            <span class="year">{{ popup.paper.year }}</span>
+          </div>
+          <div class="doi" v-if="popup.paper.doi"><a v-bind:href="'https://doi.org/' + popup.paper.doi">{{ popup.paper.doi }}</a></div>
           <div class="keywords">
-            <span class="keyword" v-for="keyword of popup.paper.keywords">{{ author }}</span>
+            <span v-for="(keyword, index) of popup.paper.keywords"><span v-if="index > 0">, </span><span class="keyword">{{ keyword }}</span></span>
           </div>
           <div class="abstract">{{ popup.paper.abstract }}</div>
         </div>
