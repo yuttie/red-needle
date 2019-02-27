@@ -72,6 +72,16 @@
         text-overflow: ellipsis;
         text-align: left;
       }
+      #popup {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #ffffff;
+        box-shadow: 0 0 1em rgba(0, 0, 0, 0.5);
+      }
+      #popup.hidden {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -80,12 +90,15 @@
         <input v-bind:value="query" v-on:input="update($event.target.value)" id="query" type="text" autofocus placeholder="Search">
       </div>
       <ul id="result-view">
-        <li v-for="match of matches" v-bind:title="match.year">
+        <li v-for="match of matches" v-on:mouseenter="showPopup($event, match)" v-on:mouseleave="hidePopup($event)" v-on:mousemove="movePopup($event)">
           <span>{{ match.parts[0] }}<span class="matched-sentence">{{ match.parts[1] }}</span></span>
           <span>{{ match.parts[2] }}</span>
           <span><span class="matched-sentence">{{ match.parts[3] }}</span>{{ match.parts[4] }}</span>
         </li>
       </ul>
+      <div id="popup" v-bind:class="{ hidden: !popup.visible }" v-bind:style="{ transform: popupTransform }">
+        <div>{{ popup.year }}</div>
+      </div>
     </div>
     <script>
       function shuffle(array) {
@@ -106,8 +119,29 @@
         data: {
           query: '',
           matches: [],
+          popup: { year: null, visible: false, x: null, y: null, },
+        },
+        computed: {
+          popupTransform: function() {
+            console.log(document.body.scrollTop);
+            return `translate(${this.popup.x + 8}px, ${window.scrollY + this.popup.y + 8}px)`;
+          },
         },
         methods: {
+          showPopup: function(ev, match) {
+            this.popup.visible = true;
+            this.popup.year = match.year;
+            this.popup.x = ev.clientX;
+            this.popup.y = ev.clientY;
+          },
+          hidePopup: function(ev) {
+            this.popup.visible = false;
+          },
+          movePopup: function(ev) {
+            console.log(ev);
+            this.popup.x = ev.clientX;
+            this.popup.y = ev.clientY;
+          },
           update: function(query) {
             this.query = query;
 
